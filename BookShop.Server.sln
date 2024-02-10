@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{32110EA4-E991-49A6-B25E-6FAFC8927C8A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{07E67CAB-038F-400C-942C-A8315F74DABE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShop.Api", "BookShop.Api\BookShop.Api.csproj", "{8529A9D7-EA24-43B8-BD97-9C133E67F60F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8529A9D7-EA24-43B8-BD97-9C133E67F60F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8529A9D7-EA24-43B8-BD97-9C133E67F60F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8529A9D7-EA24-43B8-BD97-9C133E67F60F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8529A9D7-EA24-43B8-BD97-9C133E67F60F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8529A9D7-EA24-43B8-BD97-9C133E67F60F} = {32110EA4-E991-49A6-B25E-6FAFC8927C8A}
+	EndGlobalSection
+EndGlobal
