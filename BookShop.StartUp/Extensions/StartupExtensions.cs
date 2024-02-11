@@ -1,4 +1,11 @@
-namespace BookShop.Api.Extensions;
+using BookShop.Api;
+using BookShop.DbContext;
+using BookShop.Settings;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace BookShop.StartUp.Extensions;
 
 /// <summary>
 /// Startup extensions
@@ -10,11 +17,15 @@ public static class StartupExtensions
     /// </summary>
     public static void ConfigureServices(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddControllers();
+        serviceCollection.AddControllers()
+            .AddApplicationPart(typeof(BookShopApiModule).Assembly);
+        
         serviceCollection.AddEndpointsApiExplorer();
         serviceCollection.AddSwaggerGen();
 
         serviceCollection.AddSwaggerGen();
+
+        serviceCollection.AddSingleton<SettingsProvider>();
     }
 
     /// <summary>

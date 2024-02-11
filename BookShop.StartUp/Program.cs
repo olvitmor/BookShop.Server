@@ -1,14 +1,14 @@
-using BookShop.Api.Extensions;
+﻿using BookShop.StartUp.Extensions;
+using Microsoft.AspNetCore.Builder;
 
-namespace BookShop.Api;
+namespace BookShop.StartUp;
 
 public static class Program
 {
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
+        
         builder.Services.ConfigureServices();
 
         var app = builder.Build();
