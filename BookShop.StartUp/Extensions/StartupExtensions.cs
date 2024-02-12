@@ -36,6 +36,7 @@ public static class StartupExtensions
     public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddControllers()
+            .AddNewtonsoftJson()
             .AddApplicationPart(typeof(BookShopApiModule).Assembly);
 
         builder.Services.AddEndpointsApiExplorer();
@@ -48,9 +49,13 @@ public static class StartupExtensions
 
         builder.Services.AddSingleton<IDbContextService, DbContextService>();
 
+        builder.Services.AddSingleton<IRepository, Repository>();
+        
         builder.Services
             .AddSingleton<IRepositoryService<Book, BooksSearchParameters, BooksCreateOrUpdateParameters>,
                 BooksRepositoryService>();
+
+        builder.Services.AddSingleton<IValidationService<Book>, BooksValidationService>();
 
         return builder;
     }
@@ -67,7 +72,6 @@ public static class StartupExtensions
             app.UseSwaggerUI(o => { o.RoutePrefix = "swagger"; });
         }
 
-        app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthorization();
         app.MapControllers();
@@ -81,7 +85,7 @@ public static class StartupExtensions
     public static WebApplication RunBackgroundServices(this WebApplication app)
     {
         var dbContextService = (IDbContextService)app.Services.GetService(typeof(IDbContextService))!;
-        dbContextService.InitAsync();
+        dbContextService.Init();
 
         return app;
     }

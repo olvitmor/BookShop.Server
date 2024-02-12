@@ -1,6 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using BookShop.DbContext.Models.Books;
 using BookShop.Domain.CreateOrUpdateParameters;
 using BookShop.Domain.CreateOrUpdateParameters.Books;
+using BookShop.Domain.Enums;
 using BookShop.Domain.Response;
 using BookShop.Domain.SearchParameters;
 using BookShop.Domain.SearchParameters.Books;
@@ -56,7 +58,7 @@ public class BooksController : Controller
     }
 
     /// <summary>
-    /// 
+    /// Create or update book instance
     /// </summary>
     /// <param name="parameters"></param>
     /// <param name="token"></param>
@@ -68,18 +70,28 @@ public class BooksController : Controller
     {
         try
         {
-            var (book, created) = await _repositoryService.CreateOrUpdate(parameters, token);
+            var (instance, actionResult) = await _repositoryService.CreateOrUpdate(parameters, token);
 
-            if (created)
+            if (actionResult == CreateOrUpdateResult.Error)
             {
-                return CreatedAtAction(nameof(CreateOrUpdate), new ResponseData(book));
+                throw new Exception($"Error processing request {nameof(CreateOrUpdate)}, see logs.");
             }
 
-            return Ok(new ResponseData(book));
+            // TODO: add action result messages
+            return (actionResult == CreateOrUpdateResult.Created)
+                ? CreatedAtAction(nameof(CreateOrUpdate), new ResponseData(instance))
+                : Ok(new ResponseData(instance));
+        }
+        catch (ValidationException validationException)
+        {
+            return BadRequest(new ResponseData(
+                message: $"Validation error processing {nameof(CreateOrUpdate)} request, see details.",
+                details: validationException.Message));
         }
         catch (Exception ex)
         {
-            return BadRequest(new ResponseData(message: "Error occured while executing request, see details.",
+            return BadRequest(new ResponseData(
+                message: $"Error processing  request, see details.",
                 details: ex));
         }
     }

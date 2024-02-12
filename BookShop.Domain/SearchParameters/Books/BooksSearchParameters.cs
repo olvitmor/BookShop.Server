@@ -5,7 +5,7 @@ namespace BookShop.Domain.SearchParameters.Books;
 public class BooksSearchParameters
 {
     [JsonPropertyName("ids")]
-    public string[]? Ids { get; set; }
+    public Guid[]? Ids { get; set; }
     
     [JsonPropertyName("name")]
     public string? Name { get; set; }

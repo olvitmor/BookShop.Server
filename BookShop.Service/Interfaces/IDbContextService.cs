@@ -4,7 +4,7 @@ namespace BookShop.Service.Interfaces;
 
 public interface IDbContextService
 {
-    public AppDbContext GetDbContext();
+    public Task<AppDbContext> CreateDbContext();
 
-    public Task InitAsync();
+    public Task Init();
 }

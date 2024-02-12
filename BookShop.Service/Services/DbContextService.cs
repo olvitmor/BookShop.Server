@@ -4,6 +4,7 @@ using BookShop.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace BookShop.Service.Services;
 
@@ -20,15 +21,36 @@ public class DbContextService : IDbContextService
         _logger = logger;
     }
 
-    public AppDbContext GetDbContext()
+    public async Task<AppDbContext> CreateDbContext()
     {
-        return new AppDbContext(_settingsProvider);
+        await ThrowIfDbIsNotAvailable();
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        optionsBuilder.UseNpgsql(_settingsProvider.DatabaseOptions.GetConnectionString());
+        optionsBuilder.LogTo(Console.WriteLine);
+        return new AppDbContext(optionsBuilder.Options);
     }
 
-    public async Task InitAsync()
+    public async Task Init()
     {
-        await using var dbContext = new AppDbContext(_settingsProvider);
-
+        await ThrowIfDbIsNotAvailable();
+        await using var dbContext = await CreateDbContext();
         await dbContext.Database.MigrateAsync();
+    }
+
+    private async Task ThrowIfDbIsNotAvailable()
+    {
+        var connectionString = _settingsProvider.DatabaseOptions.GetConnectionString();
+        try
+        {
+            await using var connection = new NpgsqlConnection(connectionString);
+            await connection.OpenAsync();
+            await connection.CloseAsync();
+            return;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(message: "Database is not available");
+            throw;
+        }
     }
 }

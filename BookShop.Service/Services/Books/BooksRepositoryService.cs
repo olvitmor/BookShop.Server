@@ -1,10 +1,13 @@
+using System.Data.Common;
 using BookShop.DbContext.Models.Books;
 using BookShop.Domain.CreateOrUpdateParameters;
 using BookShop.Domain.CreateOrUpdateParameters.Books;
+using BookShop.Domain.Enums;
 using BookShop.Domain.SearchParameters.Books;
 using BookShop.Service.Interfaces;
 using BookShop.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace BookShop.Service.Services.Books;
 
@@ -12,22 +15,40 @@ public class BooksRepositoryService : IRepositoryService<Book, BooksSearchParame
 {
     private readonly SettingsProvider _settingsProvider;
     private readonly IDbContextService _dbContextService;
+    private readonly IValidationService<Book> _validationService;
+    private readonly ILogger<BooksRepositoryService> _logger;
+    private readonly IRepository _repository;
     
-    public BooksRepositoryService(SettingsProvider settingsProvider, IDbContextService dbContextService)
+
+    public BooksRepositoryService(SettingsProvider settingsProvider,
+        IDbContextService dbContextService,
+        IValidationService<Book> validationService,
+        ILogger<BooksRepositoryService> logger,
+        IRepository repository)
     {
         _settingsProvider = settingsProvider;
         _dbContextService = dbContextService;
+        _validationService = validationService;
+        _logger = logger;
+        _repository = repository;
     }
-    
+
     public async Task<ICollection<Book>> Find(BooksSearchParameters parameters, CancellationToken token)
     {
-        var expression = parameters.GetExpression();
-        
-        await using var dbContext = _dbContextService.GetDbContext();
+        var resultList = new List<Book>();
 
-        return await dbContext.Books
-            .Where(expression)
-            .ToListAsync(token);
+        var isSuccess = await _repository.ExecuteAsync<Book>(FindBooksFunc);
+
+        return resultList;
+
+        async Task FindBooksFunc()
+        {
+            var expression = parameters.GetExpression();
+            await using var dbContext = await _dbContextService.CreateDbContext();
+
+            resultList = await dbContext.Books.Where(expression)
+                .ToListAsync(token);
+        }
     }
 
     public Task<Book> Get(BooksSearchParameters parameters, CancellationToken token)
@@ -35,32 +56,46 @@ public class BooksRepositoryService : IRepositoryService<Book, BooksSearchParame
         throw new NotImplementedException();
     }
 
-    public async Task<(Book, bool)> CreateOrUpdate(BooksCreateOrUpdateParameters parameters, CancellationToken token)
+    public async Task<(Book?, CreateOrUpdateResult)> CreateOrUpdate(BooksCreateOrUpdateParameters parameters,
+        CancellationToken token)
     {
-        if (parameters == null)
-            throw new ArgumentNullException();
-        
-        await using var dbContext = _dbContextService.GetDbContext();
+        ArgumentNullException.ThrowIfNull(parameters);
 
-        var bookInDb = await dbContext.Books.FindAsync(new object?[] { parameters.Id, token }, cancellationToken: token);
+        _validationService.Validate(parameters.Book);
 
-        var needToCreate = bookInDb == null;
+        Book? instance = null;
+        var actionResult = CreateOrUpdateResult.None;
 
-        if (!needToCreate)
+        var isSuccess = await _repository.ExecuteAsync<Book>(BooksCreateOrUpdateFunc);
+
+        if (!isSuccess)
+            actionResult = CreateOrUpdateResult.Error;
+
+        return (instance, actionResult);
+
+        async Task BooksCreateOrUpdateFunc()
         {
-            // update
-            bookInDb?.Apply(parameters.Book);
-        }
-        else
-        {
-            // create
-            bookInDb = parameters.Book;
-            await dbContext.Books.AddAsync(bookInDb, token);
-        }
+            await using var dbContext = await _dbContextService.CreateDbContext();
 
-        await dbContext.SaveChangesAsync(token);
+            var existingBook = await dbContext.Books.FindAsync(new object?[] { parameters.Id, token }, cancellationToken: token);
 
-        return (bookInDb, needToCreate);
+            var needToCreate = existingBook == null;
+
+            if (needToCreate)
+            {
+                await dbContext.Books.AddAsync(parameters.Book, token);
+                actionResult = CreateOrUpdateResult.Created;
+            }
+            else
+            {
+                existingBook?.Apply(parameters.Book);
+                actionResult = CreateOrUpdateResult.Updated;
+            }
+
+            await dbContext.SaveChangesAsync(token);
+
+            instance = existingBook;
+        }
     }
 
     public Task<Guid> Delete(Guid id, CancellationToken token)
