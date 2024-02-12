@@ -1,8 +1,10 @@
 using BookShop.Api;
 using BookShop.DbContext;
 using BookShop.DbContext.Models.Books;
+using BookShop.Domain.CreateOrUpdateParameters;
+using BookShop.Domain.CreateOrUpdateParameters.Books;
 using BookShop.Domain.SearchParameters;
-using BookShop.Domain.UpdateParameters;
+using BookShop.Domain.SearchParameters.Books;
 using BookShop.Service.Interfaces;
 using BookShop.Service.Services;
 using BookShop.Service.Services.Books;

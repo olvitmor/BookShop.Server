@@ -9,7 +9,6 @@ namespace BookShop.Service.Services;
 
 public class DbContextService : IDbContextService
 {
-    private readonly IConfiguration _configuration;
     private readonly SettingsProvider _settingsProvider;
     private readonly ILogger<DbContextService> _logger;
     
@@ -17,14 +16,13 @@ public class DbContextService : IDbContextService
         SettingsProvider settingsProvider,
         ILogger<DbContextService> logger)
     {
-        _configuration = configuration;
         _settingsProvider = settingsProvider;
         _logger = logger;
     }
 
-    public Task<AppDbContext> GetDbContext()
+    public AppDbContext GetDbContext()
     {
-        throw new NotImplementedException();
+        return new AppDbContext(_settingsProvider);
     }
 
     public async Task InitAsync()

@@ -11,6 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BookShop.DbContext\BookShop.DbContext.csproj" />
+      <ProjectReference Include="..\BookShop.Service\BookShop.Service.csproj" />
       <ProjectReference Include="..\BookShop.Settings\BookShop.Settings.csproj" />
     </ItemGroup>
 
