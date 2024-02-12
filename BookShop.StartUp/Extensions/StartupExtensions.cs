@@ -1,7 +1,14 @@
 using BookShop.Api;
 using BookShop.DbContext;
+using BookShop.DbContext.Models.Books;
+using BookShop.Domain.SearchParameters;
+using BookShop.Domain.UpdateParameters;
+using BookShop.Service.Interfaces;
+using BookShop.Service.Services;
+using BookShop.Service.Services.Books;
 using BookShop.Settings;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,26 +19,44 @@ namespace BookShop.StartUp.Extensions;
 /// </summary>
 public static class StartupExtensions
 {
+    public static WebApplicationBuilder ConfigureBuilder(this WebApplicationBuilder builder)
+    {
+        builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+
+        builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: false);
+        
+        return builder;
+    }
+    
     /// <summary>
     /// Configure services
     /// </summary>
-    public static void ConfigureServices(this IServiceCollection serviceCollection)
+    public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
     {
-        serviceCollection.AddControllers()
+        builder.Services.AddControllers()
             .AddApplicationPart(typeof(BookShopApiModule).Assembly);
-        
-        serviceCollection.AddEndpointsApiExplorer();
-        serviceCollection.AddSwaggerGen();
 
-        serviceCollection.AddSwaggerGen();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
 
-        serviceCollection.AddSingleton<SettingsProvider>();
+        builder.Services.AddSwaggerGen();
+
+        builder.Services.AddSingleton<SettingsProvider>();
+        builder.Services.AddDbContext<AppDbContext>();
+
+        builder.Services.AddSingleton<IDbContextService, DbContextService>();
+
+        builder.Services
+            .AddSingleton<IRepositoryService<Book, BooksSearchParameters, BooksCreateOrUpdateParameters>,
+                BooksRepositoryService>();
+
+        return builder;
     }
 
     /// <summary>
     /// Configure application
     /// </summary>
-    public static void ConfigureApp(this WebApplication app)
+    public static WebApplication ConfigureApp(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
         {
@@ -44,5 +69,18 @@ public static class StartupExtensions
         app.UseRouting();
         app.UseAuthorization();
         app.MapControllers();
+
+        return app;
+    }
+
+    /// <summary>
+    /// Run background services
+    /// </summary>
+    public static WebApplication RunBackgroundServices(this WebApplication app)
+    {
+        var dbContextService = (IDbContextService)app.Services.GetService(typeof(IDbContextService))!;
+        dbContextService.InitAsync();
+
+        return app;
     }
 }

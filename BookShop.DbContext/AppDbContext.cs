@@ -7,22 +7,20 @@ namespace BookShop.DbContext;
 
 public class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
-    private readonly IConfiguration _configuration;
     private readonly SettingsProvider _settingsProvider;
     
     public DbSet<Book> Books { get; set; }
 
-    public AppDbContext(DbContextOptions<AppDbContext> options,
-        IConfiguration configuration,
-        SettingsProvider settingsProvider) : base(options)
+    public AppDbContext(SettingsProvider settingsProvider)
     {
-        _configuration = configuration;
         _settingsProvider = settingsProvider;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = _settingsProvider.DbSettings.GetConnectionString();
-        optionsBuilder.UseNpgsql(connectionString);
+        var connectionString = _settingsProvider.DatabaseOptions.GetConnectionString();
+        optionsBuilder
+            .UseNpgsql(connectionString)
+            .LogTo(Console.WriteLine);
     }
 }
