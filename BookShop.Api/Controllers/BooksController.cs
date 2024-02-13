@@ -1,10 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using BookShop.DbContext.Models.Books;
-using BookShop.Domain.CreateOrUpdateParameters;
 using BookShop.Domain.CreateOrUpdateParameters.Books;
 using BookShop.Domain.Enums;
 using BookShop.Domain.Response;
-using BookShop.Domain.SearchParameters;
 using BookShop.Domain.SearchParameters.Books;
 using BookShop.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -19,18 +17,18 @@ namespace BookShop.Api.Controllers;
 public class BooksController : Controller
 {
     private readonly ILogger<BooksController> _logger;
-    private readonly IRepositoryService<Book, BooksSearchParameters, BooksCreateOrUpdateParameters> _repositoryService;
+    private readonly IRepositoryReadService<Book, BooksSearchParameters, BooksCreateOrUpdateParameters> _repositoryReadService;
 
     /// <summary>
     /// Books controller constructor
     /// </summary>
     /// <param name="logger">Logging interface</param>
-    /// <param name="repositoryService">Service for books</param>
+    /// <param name="repositoryReadService">Service for books</param>
     public BooksController(ILogger<BooksController> logger,
-        IRepositoryService<Book, BooksSearchParameters, BooksCreateOrUpdateParameters> repositoryService)
+        IRepositoryReadService<Book, BooksSearchParameters, BooksCreateOrUpdateParameters> repositoryReadService)
     {
         _logger = logger;
-        _repositoryService = repositoryService;
+        _repositoryReadService = repositoryReadService;
     }
 
     /// <summary>
@@ -46,7 +44,7 @@ public class BooksController : Controller
     {
         try
         {
-            var result = await _repositoryService.Find(parameters, token);
+            var result = await _repositoryReadService.Find(parameters, token);
 
             return Ok(new ResponseData(result));
         }
@@ -70,7 +68,7 @@ public class BooksController : Controller
     {
         try
         {
-            var (instance, actionResult) = await _repositoryService.CreateOrUpdate(parameters, token);
+            var (instance, actionResult) = await _repositoryReadService.CreateOrUpdate(parameters, token);
 
             if (actionResult == CreateOrUpdateResult.Error)
             {

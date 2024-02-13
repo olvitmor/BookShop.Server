@@ -1,9 +1,7 @@
 using BookShop.Api;
 using BookShop.DbContext;
 using BookShop.DbContext.Models.Books;
-using BookShop.Domain.CreateOrUpdateParameters;
 using BookShop.Domain.CreateOrUpdateParameters.Books;
-using BookShop.Domain.SearchParameters;
 using BookShop.Domain.SearchParameters.Books;
 using BookShop.Service.Interfaces;
 using BookShop.Service.Services;
@@ -39,23 +37,16 @@ public static class StartupExtensions
             .AddNewtonsoftJson()
             .AddApplicationPart(typeof(BookShopApiModule).Assembly);
 
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        builder.Services.AddSwaggerGen();
-
-        builder.Services.AddSingleton<SettingsProvider>();
-        builder.Services.AddDbContext<AppDbContext>();
-
-        builder.Services.AddSingleton<IDbContextService, DbContextService>();
-
-        builder.Services.AddSingleton<IRepository, Repository>();
-        
-        builder.Services
-            .AddSingleton<IRepositoryService<Book, BooksSearchParameters, BooksCreateOrUpdateParameters>,
-                BooksRepositoryService>();
-
-        builder.Services.AddSingleton<IValidationService<Book>, BooksValidationService>();
+        builder.Services.AddEndpointsApiExplorer()
+            .AddSwaggerGen()
+            .AddAutoMapper(typeof(AppMappingProfile))
+            .AddSingleton<SettingsProvider>()
+            .AddDbContext<AppDbContext>()
+            .AddDbContextFactory<AppDbContext, DbContextFactoryService>()
+            .AddSingleton<IDbContextFactoryService, DbContextFactoryService>()
+            .AddSingleton<IRepository, RepositoryService>()
+            .AddSingleton<IRepositoryReadService<Book, BooksSearchParameters, BooksCreateOrUpdateParameters>,BooksRepositoryReadReadService>()
+            .AddSingleton<IValidationService<Book>, BooksValidationService>();
 
         return builder;
     }
@@ -82,10 +73,10 @@ public static class StartupExtensions
     /// <summary>
     /// Run background services
     /// </summary>
-    public static WebApplication RunBackgroundServices(this WebApplication app)
+    public static WebApplication RunBackgroundJobs(this WebApplication app)
     {
-        var dbContextService = (IDbContextService)app.Services.GetService(typeof(IDbContextService))!;
-        dbContextService.Init();
+        var dbContextFactoryService = (IDbContextFactoryService)app.Services.GetService(typeof(IDbContextFactoryService))!;
+        dbContextFactoryService.MigrateAsync();
 
         return app;
     }

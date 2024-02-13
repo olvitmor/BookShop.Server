@@ -1,18 +1,18 @@
-using System.Text.Json.Serialization;
+
+using Newtonsoft.Json;
 
 namespace BookShop.Domain.Response;
 
+
 public class ResponseData(object? content, string? message = null, object? details = null)
 {
-    [JsonPropertyName("content")]
+    [JsonProperty("content")]
     public object? Content { get; set; } = content;
 
-    [JsonPropertyName("message")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
     public string? Message { get; set; } = message;
 
-    [JsonPropertyName("details")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonProperty("details", NullValueHandling = NullValueHandling.Ignore)]
     public object? Details { get; set; } = details;
 
     public ResponseData(string message) : this(null, message, null)

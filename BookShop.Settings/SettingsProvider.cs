@@ -7,6 +7,7 @@ namespace BookShop.Settings;
 public class SettingsProvider
 {
     public DatabaseOptions DatabaseOptions { get; private set; }
+    public AppBehaviourOptions AppBehaviourOptions { get; private set; }
 
     private readonly IConfiguration _configuration;
 
@@ -23,13 +24,22 @@ public class SettingsProvider
     private void Initialize()
     {
         _logger.LogInformation("Applying application settings");
-
-        ApplyDatabaseSettings();
+        ApplyDatabaseOptions();
+        ApplyAppBehaviourOptions();
     }
 
-    private void ApplyDatabaseSettings()
+    private void ApplyAppBehaviourOptions()
     {
-        _logger.LogInformation("Applying database settings");
+        _logger.LogInformation($"Applying {nameof(Models.AppBehaviourOptions)} options");
+
+        AppBehaviourOptions = new AppBehaviourOptions();
+        
+        _configuration.GetSection(AppBehaviourOptions.OptionsKey).Bind(AppBehaviourOptions);
+    }
+
+    private void ApplyDatabaseOptions()
+    {
+        _logger.LogInformation($"Applying {nameof(Models.DatabaseOptions)} options");
 
         DatabaseOptions = new DatabaseOptions();
 

@@ -1,8 +1,5 @@
 ﻿using BookShop.DbContext.Models.Books;
-using BookShop.Settings;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 
 namespace BookShop.DbContext;
 

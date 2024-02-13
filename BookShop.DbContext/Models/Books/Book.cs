@@ -1,6 +1,8 @@
+using BookShop.DbContext.Interfaces;
+
 namespace BookShop.DbContext.Models.Books;
 
-public class Book
+public class Book : IHasId
 {
     /// <summary>
     /// Unique book id

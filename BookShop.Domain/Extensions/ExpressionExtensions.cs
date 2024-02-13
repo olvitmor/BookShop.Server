@@ -17,7 +17,7 @@ public static class ExpressionExtensions
         this Expression<Func<T, bool>> leftOperand,
         Expression<Func<T, bool>> rightOperand)
     {
-        ParameterExpression parameter = leftOperand.Parameters[0];
+        var parameter = leftOperand.Parameters[0];
         return Expression.Lambda<Func<T, bool>>(
             body: (Expression)Expression.AndAlso(
                 left: GetModifiedOperand<T>(leftOperand, (Expression)parameter),
