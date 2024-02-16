@@ -1,4 +1,4 @@
-﻿using BookShop.DbContext.Models.Books;
+﻿using BookShop.Domain.Models.Books;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookShop.DbContext;

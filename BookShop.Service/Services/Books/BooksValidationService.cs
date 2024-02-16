@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
-using BookShop.DbContext.Models.Books;
+using BookShop.Domain.Models.Books;
 using BookShop.Service.Interfaces;
+using BookShop.Service.Interfaces.Books;
 using Microsoft.Extensions.Logging;
 
 namespace BookShop.Service.Services.Books;
 
-public class BooksValidationService : IValidationService<Book>
+public class BooksValidationService : IBooksValidationService
 {
     private readonly ILogger<BooksValidationService> _logger;
     
@@ -14,7 +15,7 @@ public class BooksValidationService : IValidationService<Book>
         _logger = logger;
     }
     
-    public void Validate(Book model)
+    public void ThrowIfNotValid(Book model)
     {
         ValidateFunc(model);   
     }

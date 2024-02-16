@@ -6,7 +6,7 @@ public interface IValidationService<TModel>
     /// Validation method, that throws an exception
     /// if model is not valid.
     /// </summary>
-    public void Validate(TModel model);
+    public void ThrowIfNotValid(TModel model);
 
     /// <summary>
     /// Validation method that returns a Boolean

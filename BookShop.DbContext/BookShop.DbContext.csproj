@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BookShop.Domain\BookShop.Domain.csproj" />
       <ProjectReference Include="..\BookShop.Settings\BookShop.Settings.csproj" />
     </ItemGroup>
 

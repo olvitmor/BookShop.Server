@@ -12,8 +12,9 @@ public class DbContextFactoryService : IDbContextFactoryService
 {
     private readonly SettingsProvider _settingsProvider;
     private readonly ILogger<DbContextFactoryService> _logger;
-    
-    public DbContextFactoryService(IConfiguration configuration, 
+
+    public DbContextFactoryService(
+        IConfiguration configuration,
         SettingsProvider settingsProvider,
         ILogger<DbContextFactoryService> logger)
     {
@@ -53,7 +54,7 @@ public class DbContextFactoryService : IDbContextFactoryService
         catch (Exception ex)
         {
             _logger.LogCritical(ex, "Error applying migrations");
-            
+
             if (_settingsProvider.AppBehaviourOptions.FALL_IF_MIGRATION_FAILED)
                 throw;
         }

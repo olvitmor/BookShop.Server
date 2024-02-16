@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
-using BookShop.DbContext.Interfaces;
 using BookShop.Domain.Enums;
+using BookShop.Domain.Interfaces;
 
 namespace BookShop.Service.Interfaces;
 

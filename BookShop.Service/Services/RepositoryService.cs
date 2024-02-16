@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using BookShop.DbContext;
-using BookShop.DbContext.Interfaces;
 using BookShop.Domain.Enums;
+using BookShop.Domain.Interfaces;
 using BookShop.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

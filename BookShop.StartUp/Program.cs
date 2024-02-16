@@ -1,4 +1,4 @@
-﻿using BookShop.StartUp.Extensions;
+﻿using BookShop.StartUp.Modules;
 using Microsoft.AspNetCore.Builder;
 
 namespace BookShop.StartUp;
@@ -9,11 +9,20 @@ public static class Program
     {
         var app = WebApplication
             .CreateBuilder(args)
-            .ConfigureBuilder()
-            .ConfigureServices()
-            .Build()
-            .ConfigureApp()
-            .RunBackgroundJobs();
+            .AddStartupModule()
+            .AddSettingsModule()
+            .AddDbContextModule()
+            .AddMapperModule()
+            .AddRepositoryModule()
+            .Build();
+
+        app.AddSwaggerModule();
+
+        app.UseRouting();
+        app.UseAuthorization();
+        app.MapControllers();
+
+        app.AddBackgroundModule();
         
         app.Run();
     }

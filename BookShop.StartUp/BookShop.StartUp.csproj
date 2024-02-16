@@ -10,7 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="13.0.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
           <PrivateAssets>all</PrivateAssets>
@@ -37,6 +37,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BookShop.Api\BookShop.Api.csproj" />
+      <ProjectReference Include="..\BookShop.Mapper\BookShop.Mapper.csproj" />
       <ProjectReference Include="..\BookShop.Service\BookShop.Service.csproj" />
       <ProjectReference Include="..\BookShop.Settings\BookShop.Settings.csproj" />
     </ItemGroup>

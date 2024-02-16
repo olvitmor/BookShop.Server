@@ -2,13 +2,9 @@ using BookShop.Domain.Enums;
 
 namespace BookShop.Service.Interfaces;
 
-public interface IRepositoryReadService<TModel, in TSearchParameters, in TCreateOrUpdateParameters>
+public interface IRepositoryReadService<TModel, in TSearchParameters>
 {
     public Task<ICollection<TModel>> Find(TSearchParameters parameters, CancellationToken token);
 
     public Task<TModel> Get(TSearchParameters parameters, CancellationToken token);
-
-    public Task<(TModel?, CreateOrUpdateResult)> CreateOrUpdate(TCreateOrUpdateParameters parameters, CancellationToken token);
-
-    public Task<Guid> Delete(Guid id, CancellationToken token);
 }

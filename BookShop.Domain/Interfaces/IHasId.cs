@@ -1,4 +1,4 @@
-namespace BookShop.DbContext.Interfaces;
+namespace BookShop.Domain.Interfaces;
 
 public interface IHasId
 {
