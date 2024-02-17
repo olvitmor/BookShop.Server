@@ -40,7 +40,7 @@ public class BooksController : Controller
     }
 
     /// <summary>
-    /// Find 
+    /// Find books
     /// </summary>
     /// <param name="token"></param>
     /// <param name="parameters"></param>
@@ -93,6 +93,35 @@ public class BooksController : Controller
             return BadRequest(new ResponseData(
                 message: $"Validation error processing {nameof(CreateOrUpdate)} request, see details.",
                 details: validationException.Message));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ResponseData(
+                message: $"Error processing  request, see details.",
+                details: ex));
+        }
+    }
+
+    /// <summary>
+    /// Delete books
+    /// </summary>
+    /// <param name="parameters"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    [HttpDelete]
+    public async Task<IActionResult> Delete(BooksDeleteParameters parameters, CancellationToken token)
+    {
+        try
+        {
+            var (deletedIds, actionResult) = await _deleteService.Delete(parameters, token);
+
+            if (actionResult == DeleteResult.Error)
+            {
+                throw new Exception($"Error processing request {nameof(CreateOrUpdate)}, see logs.");
+            }
+
+            return Ok(new ResponseData(deletedIds));
         }
         catch (Exception ex)
         {

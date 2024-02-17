@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using BookShop.DbContext;
 using BookShop.Service.Interfaces;
 using BookShop.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Npgsql;
@@ -26,7 +28,8 @@ public class DbContextFactoryService : IDbContextFactoryService
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseNpgsql(MakeConnectionString());
-        optionsBuilder.LogTo(Console.WriteLine);
+        optionsBuilder.EnableSensitiveDataLogging();
+        optionsBuilder.LogTo(x => _logger.LogInformation(x), new[] { RelationalEventId.CommandExecuting });
         return new AppDbContext(optionsBuilder.Options);
     }
 

@@ -4,6 +4,7 @@ using BookShop.Service.Services;
 using BookShop.Service.Services.Books;
 using BookShop.Service.Services.Books.Create;
 using BookShop.Service.Services.Books.Delete;
+using BookShop.Service.Services.Books.Read;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 

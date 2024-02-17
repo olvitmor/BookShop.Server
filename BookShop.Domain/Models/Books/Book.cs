@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace BookShop.Domain.Models.Books;
 
-public class Book : BaseEntity, IHasId, IHasName, IHasDescription
+public class Book : BaseEntity, IHasId, IHasName
 {
     /// <summary>
     /// Book name

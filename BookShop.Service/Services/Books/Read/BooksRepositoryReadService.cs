@@ -4,7 +4,7 @@ using BookShop.Domain.Models.Books;
 using BookShop.Service.Interfaces;
 using BookShop.Service.Interfaces.Books;
 
-namespace BookShop.Service.Services.Books;
+namespace BookShop.Service.Services.Books.Read;
 
 public class BooksRepositoryReadService : IBooksRepositoryReadService
 {
@@ -26,10 +26,5 @@ public class BooksRepositoryReadService : IBooksRepositoryReadService
                 x => x.Description!.Contains(parameters.Description!));
 
         return await _repository.Find<Book>(filter, token);
-    }
-
-    public Task<Book> Get(BooksSearchParameters parameters, CancellationToken token)
-    {
-        throw new NotImplementedException();
     }
 }

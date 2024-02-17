@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace BookShop.Domain.Models.Books;
 
-public class BooksSearchParameters : IHasIds, IHasNames, IHasDescription
+public class BooksSearchParameters
 {
     [JsonProperty("ids")]
     public Guid[]? Ids { get; set; }

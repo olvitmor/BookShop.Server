@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq.Expressions;
 using AutoMapper;
 using BookShop.DbContext;
@@ -30,7 +31,7 @@ public class RepositoryService : IRepository
         throw new NotImplementedException();
     }
 
-    public async Task<List<TModel>> Find<TModel>(Expression<Func<TModel, bool>> filter, CancellationToken token)
+    public async Task<ICollection<TModel>> Find<TModel>(Expression<Func<TModel, bool>> filter, CancellationToken token)
         where TModel : class
     {
         try
@@ -52,7 +53,8 @@ public class RepositoryService : IRepository
         throw new NotImplementedException();
     }
 
-    public async Task<(TModel?, CreateOrUpdateResult)> CreateOrUpdate<TModel>(Guid guid, TModel model, CancellationToken token)
+    public async Task<(TModel?, CreateOrUpdateResult)> CreateOrUpdate<TModel>(Guid guid, TModel model,
+        CancellationToken token)
         where TModel : class, IHasId
     {
         TModel? entity = null;
@@ -85,8 +87,31 @@ public class RepositoryService : IRepository
         return (entity, actionResult);
     }
 
-    public Task<(TModel, bool, string)> Delete<TModel>(Guid id, CancellationToken token) where TModel : class
+    public async Task<(ICollection<Guid>?, DeleteResult)> Delete<TModel>(Expression<Func<TModel, bool>> filter,
+        CancellationToken token)
+        where TModel : class, IHasId
     {
-        throw new NotImplementedException();
+        var actionResult = DeleteResult.None;
+        try
+        {
+            await using var dbContext = await _dbContextFactoryService.CreateDbContextAsync(token);
+
+            var entities = await dbContext.Set<TModel>().Where(filter).ToListAsync(token);
+
+            var ids = entities.Select(x => x.Id).ToList();
+
+            dbContext.Set<TModel>().RemoveRange(entities);
+
+            await dbContext.SaveChangesAsync(token);
+
+            return (ids, DeleteResult.Success);
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex, $"Error processing {nameof(CreateOrUpdate)} request");
+            actionResult = DeleteResult.Error;
+        }
+
+        return ([], actionResult);
     }
 }

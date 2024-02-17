@@ -1,3 +1,6 @@
+using System.Linq.Expressions;
+using BookShop.Domain.Enums;
+using BookShop.Domain.Extensions;
 using BookShop.Domain.Models.Books;
 using BookShop.Service.Interfaces;
 using BookShop.Service.Interfaces.Books;
@@ -18,13 +21,14 @@ public class BooksRepositoryDeleteService : IBooksRepositoryDeleteService
         _repository = repository;
     }
 
-    public Task<Guid> Delete(BooksDeleteParameters parameters, CancellationToken token)
+    public async Task<(ICollection<Guid>?, DeleteResult)> Delete(BooksDeleteParameters parameters, CancellationToken token)
     {
-        throw new NotImplementedException();
-    }
+        _logger.LogInformation($"{nameof(Delete)} request for {nameof(Book)} entity");
+        
+        var filter = ((Expression<Func<Book, bool>>)(x => true))
+            .AddAndAlsoConditionWhenTrue(parameters.Ids is not null and { Length: > 0 },
+                x => parameters.Ids!.Contains(x.Id));
 
-    public Task<List<Guid>> DeleteBulk(BooksDeleteParameters parameters, CancellationToken token)
-    {
-        throw new NotImplementedException();
+        return await _repository.Delete<Book>(filter, token);
     }
 }
