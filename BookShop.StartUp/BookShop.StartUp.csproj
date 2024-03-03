@@ -39,7 +39,6 @@
       <ProjectReference Include="..\BookShop.Api\BookShop.Api.csproj" />
       <ProjectReference Include="..\BookShop.Mapper\BookShop.Mapper.csproj" />
       <ProjectReference Include="..\BookShop.Service\BookShop.Service.csproj" />
-      <ProjectReference Include="..\BookShop.Settings\BookShop.Settings.csproj" />
     </ItemGroup>
 
     <ItemGroup>

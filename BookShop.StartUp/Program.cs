@@ -9,20 +9,20 @@ public static class Program
     {
         var app = WebApplication
             .CreateBuilder(args)
-            .AddStartupModule()
-            .AddSettingsModule()
-            .AddDbContextModule()
-            .AddMapperModule()
-            .AddRepositoryModule()
+            .UseStartupModule()
+            .UseOptionsModule()
+            .UseDbContextModule()
+            .UseMapperModule()
+            .UseRepositoryModule()
             .Build();
 
-        app.AddSwaggerModule();
+        app.UseSwaggerModule();
 
         app.UseRouting();
         app.UseAuthorization();
         app.MapControllers();
 
-        app.AddBackgroundModule();
+        app.UseBackgroundModule();
         
         app.Run();
     }

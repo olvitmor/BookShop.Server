@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using BookShop.Domain.Enums;
 using BookShop.Domain.Models.Books;
 using BookShop.Domain.Response;
-using BookShop.Service.Interfaces;
 using BookShop.Service.Interfaces.Books;
 using Microsoft.AspNetCore.Mvc;
 

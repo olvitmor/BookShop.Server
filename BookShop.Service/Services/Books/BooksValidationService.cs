@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using BookShop.Domain.Models.Books;
-using BookShop.Service.Interfaces;
 using BookShop.Service.Interfaces.Books;
 using Microsoft.Extensions.Logging;
 

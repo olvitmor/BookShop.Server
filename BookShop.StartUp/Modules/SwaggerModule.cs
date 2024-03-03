@@ -5,7 +5,7 @@ namespace BookShop.StartUp.Modules;
 
 public static class SwaggerModule
 {
-    public static WebApplication AddSwaggerModule(this WebApplication app)
+    public static WebApplication UseSwaggerModule(this WebApplication app)
     {
         if (!app.Environment.IsDevelopment()) return app;
         

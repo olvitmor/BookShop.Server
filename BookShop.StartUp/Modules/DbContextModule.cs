@@ -8,12 +8,13 @@ namespace BookShop.StartUp.Modules;
 
 public static class DbContextModule
 {
-    public static WebApplicationBuilder AddDbContextModule(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder UseDbContextModule(this WebApplicationBuilder builder)
     {
         builder.Services
             .AddDbContext<AppDbContext>()
             .AddDbContextFactory<AppDbContext, DbContextFactoryService>()
-            .AddSingleton<IDbContextFactoryService, DbContextFactoryService>();
+            .AddSingleton<IDbContextFactoryService, DbContextFactoryService>()
+            .AddSingleton<IMigrationMonitor, MigrationMonitor>();
 
         return builder;
     }

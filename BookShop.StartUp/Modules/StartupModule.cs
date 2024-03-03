@@ -6,7 +6,7 @@ namespace BookShop.StartUp.Modules;
 
 public static class StartupModule
 {
-    public static WebApplicationBuilder AddStartupModule(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder UseStartupModule(this WebApplicationBuilder builder)
     {
         builder.Services
             .AddControllers()

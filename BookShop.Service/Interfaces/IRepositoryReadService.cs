@@ -1,5 +1,3 @@
-using BookShop.Domain.Enums;
-
 namespace BookShop.Service.Interfaces;
 
 public interface IRepositoryReadService<TModel, in TSearchParameters>

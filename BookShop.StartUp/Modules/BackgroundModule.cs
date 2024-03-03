@@ -1,16 +1,22 @@
 using BookShop.Service.Interfaces;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BookShop.StartUp.Modules;
 
 public static class BackgroundModule
 {
-    public static WebApplication AddBackgroundModule(this WebApplication app)
+    public static WebApplication UseBackgroundModule(this WebApplication app)
     {
-        var dbContextFactoryService =
-            (IDbContextFactoryService)app.Services.GetService(typeof(IDbContextFactoryService))!;
-        dbContextFactoryService.MigrateAsync();
+        var migrationMonitor = app.Services.GetRequiredService<IMigrationMonitor>();
+        migrationMonitor.ApplyDatabaseMigrationEvents();
+        migrationMonitor.MigrateAsync();
 
         return app;
+    }
+
+    private static IMigrationMonitor ApplyDatabaseMigrationEvents(this IMigrationMonitor migrationMonitor)
+    {
+        return migrationMonitor;
     }
 }

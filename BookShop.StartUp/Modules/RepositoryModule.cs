@@ -12,7 +12,7 @@ namespace BookShop.StartUp.Modules;
 
 public static class RepositoryModule
 {
-    public static WebApplicationBuilder AddRepositoryModule(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder UseRepositoryModule(this WebApplicationBuilder builder)
     {
         builder.Services
             .AddSingleton<IRepository, RepositoryService>()
