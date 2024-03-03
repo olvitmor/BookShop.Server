@@ -4,7 +4,7 @@ using BookShop.Domain.Models.DbContext;
 
 namespace BookShop.Service.Interfaces.Books;
 
-public interface IBooksRepositoryReadService : IRepositoryReadService<Book, BooksSearchParameters>
+public interface IBooksRepositoryCreateOrUpdateService : IRepositoryCreateService<Book, BooksCreateOrUpdateParameters>
 {
     
 }

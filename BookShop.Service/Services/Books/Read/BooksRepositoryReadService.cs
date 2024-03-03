@@ -1,6 +1,8 @@
 using System.Linq.Expressions;
 using BookShop.Domain.Extensions;
-using BookShop.Domain.Models.Books;
+using BookShop.Domain.Models.Api;
+using BookShop.Domain.Models.Api.Books;
+using BookShop.Domain.Models.DbContext;
 using BookShop.Service.Interfaces;
 using BookShop.Service.Interfaces.Books;
 

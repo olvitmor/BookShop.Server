@@ -1,10 +1,13 @@
+using BookShop.Domain.Models.Api.Books;
 using BookShop.Service.Interfaces;
 using BookShop.Service.Interfaces.Books;
 using BookShop.Service.Services;
 using BookShop.Service.Services.Books;
-using BookShop.Service.Services.Books.Create;
+using BookShop.Service.Services.Books.CreateOrUpdate;
 using BookShop.Service.Services.Books.Delete;
 using BookShop.Service.Services.Books.Read;
+using BookShop.Service.Services.Books.Validate;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,16 +19,17 @@ public static class RepositoryModule
     {
         builder.Services
             .AddSingleton<IRepository, RepositoryService>()
-            .AddValidationServices()
             .AddReadServices()
-            .AddCreateServices()
-            .AddDeleteServices();
+            .AddDeleteServices()
+            .AddValidationServices()
+            .AddCreateServices();
         
         return builder;
     }
 
     private static IServiceCollection AddValidationServices(this IServiceCollection services)
     {
+        services.AddScoped<IValidator<BooksCreateOrUpdateParameters>, BooksCreateOrUpdateValidator>();
         services.AddScoped<IBooksValidationService, BooksValidationService>();
 
         return services;
@@ -40,7 +44,7 @@ public static class RepositoryModule
 
     private static IServiceCollection AddCreateServices(this IServiceCollection services)
     {
-        services.AddScoped<IBooksRepositoryCreateService, BooksRepositoryCreateService>();
+        services.AddScoped<IBooksRepositoryCreateOrUpdateService, BooksRepositoryCreateOrUpdateService>();
         
         return services;
     }

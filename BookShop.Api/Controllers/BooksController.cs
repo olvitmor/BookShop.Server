@@ -1,6 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 using BookShop.Domain.Enums;
-using BookShop.Domain.Models.Books;
+using BookShop.Domain.Extensions;
+using BookShop.Domain.Models.Api;
+using BookShop.Domain.Models.Api.Books;
 using BookShop.Domain.Response;
 using BookShop.Service.Interfaces.Books;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +18,7 @@ namespace BookShop.Api.Controllers;
 public class BooksController : Controller
 {
     private readonly ILogger<BooksController> _logger;
-    private readonly IBooksRepositoryCreateService _createService;
+    private readonly IBooksRepositoryCreateOrUpdateService _createOrUpdateOrUpdateService;
     private readonly IBooksRepositoryReadService _readService;
     private readonly IBooksRepositoryDeleteService _deleteService;
 
@@ -23,17 +26,17 @@ public class BooksController : Controller
     /// Books controller constructor
     /// </summary>
     /// <param name="logger">Logging interface</param>
-    /// <param name="createService"></param>
+    /// <param name="createOrUpdateOrUpdateService"></param>
     /// <param name="readService"></param>
     /// <param name="deleteService"></param>
     public BooksController(
         ILogger<BooksController> logger,
-        IBooksRepositoryCreateService createService,
+        IBooksRepositoryCreateOrUpdateService createOrUpdateOrUpdateService,
         IBooksRepositoryReadService readService,
         IBooksRepositoryDeleteService deleteService)
     {
         _logger = logger;
-        _createService = createService;
+        _createOrUpdateOrUpdateService = createOrUpdateOrUpdateService;
         _readService = readService;
         _deleteService = deleteService;
     }
@@ -75,7 +78,7 @@ public class BooksController : Controller
     {
         try
         {
-            var (instance, actionResult) = await _createService.CreateOrUpdate(parameters, token);
+            var (instance, actionResult) = await _createOrUpdateOrUpdateService.CreateOrUpdate(parameters, token);
 
             if (actionResult == CreateOrUpdateResult.Error)
             {
@@ -87,11 +90,11 @@ public class BooksController : Controller
                 ? CreatedAtAction(nameof(CreateOrUpdate), new ResponseData(instance))
                 : Ok(new ResponseData(instance));
         }
-        catch (ValidationException validationException)
+        catch (FluentValidation.ValidationException validationException)
         {
             return BadRequest(new ResponseData(
                 message: $"Validation error processing {nameof(CreateOrUpdate)} request, see details.",
-                details: validationException.Message));
+                details: validationException.ToSimpleStringArray()));
         }
         catch (Exception ex)
         {

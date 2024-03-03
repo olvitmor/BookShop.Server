@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using BookShop.Domain.Interfaces;
 using Newtonsoft.Json;
 
-namespace BookShop.Domain.Models.Books;
+namespace BookShop.Domain.Models.DbContext;
 
-public class Book : BaseEntity, IHasId, IHasName
+public class Book : BaseEntity, IHasName
 {
     /// <summary>
     /// Book name
